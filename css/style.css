@@ -1,0 +1,38 @@
+.chart div {
+    font: 10px sans-serif;
+    background-color: steelblue;
+    text-align: right;
+    padding: 3px;
+    margin: 1px;
+    display: inline-block;
+    color: white;
+    text-anchor: end
+  }
+
+.main {
+  z-index: 2;
+  display: none;
+  font-family: sans-serif;
+}
+
+#loading {
+  z-index: 1;
+  text-align: center;
+  background-color: white;
+  color: black;
+  display:inline-block;
+  margin-top: auto;
+  margin-bottom: auto;
+  top: 27.5%;
+  left: 50%;
+  position: fixed;
+  margin-left: -9em;
+  margin-right: -15em;
+  padding-bottom: 50px;
+  
+}
+
+#bar-chart {
+  padding-left: 1%;
+  padding-top: 0.25%;
+}
