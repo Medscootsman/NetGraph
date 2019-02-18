@@ -68,6 +68,7 @@ $.getJSON("https://api.myjson.com/bins/6i2tm", function(json) {
     $("#loading").css("display", "none");
     $(".main").css("display", "block");
 
+    //get the maximum value of the malicious activity, and count it for a certain packet.
 
     
 
@@ -86,7 +87,6 @@ switch(name) {
 }
 }
 
-//d3 creation
 
 
 
