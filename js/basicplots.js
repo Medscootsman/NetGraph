@@ -54,8 +54,8 @@ $.getJSON("https://api.myjson.com/bins/6i2tm", function(json) {
 
     var layoutPie = {
         title: "Packets detected",
-        height: 500,
-        width: 500,
+        height: 600,
+        width: 600,
     }
     
     //plot the bar
@@ -87,6 +87,8 @@ $.getJSON("https://api.myjson.com/bins/6i2tm", function(json) {
         packetsValues.push(packet.maliciousPackets);
     });
 
+    //plot data for the malicious IP chart
+
     var plotDataIPs = [
         {
         labels: packetsLabels,
@@ -99,11 +101,33 @@ $.getJSON("https://api.myjson.com/bins/6i2tm", function(json) {
 
     var layoutPieIP = {
         title: "Ip addresses that sent malicious packets",
-        height: 500,
-        width: 500,
+        height: 600,
+        width: 600,
     }
 
+    // create plot data for total packets.
+
+    var layoutPieMalPackets =
+        {
+            title: "Packets that were consider to be malicious, normal or DNS",
+            height: 600,
+            width: 600,
+        }
+
+        var plotDataMalPackets = [
+            {
+            labels: ["Malicious", "Normal", "DNS"],
+            values: [maxMalicious, maxNormal, maxDNS],
+            type: "pie",
+            name: "Ip addresses that sent malicious packets",
+            }
+        
+        ]
+    
+
     Plotly.newPlot('pie-chart-IPs', plotDataIPs, layoutPieIP);
+    Plotly.newPlot('pie-chart-MalPacks', plotDataMalPackets, layoutPieMalPackets);
+
 
 
     //always leave this at the bottom!
@@ -164,6 +188,9 @@ function getTotalActivityType(activity, jsonData) {
     }
     return max;
 }
+
+//this function loops through and gets all specfied packets that were considered malicious 
+
 
 function getMaliciousIPS(jsonData) {
     // loop through object and get all IPS that are sending packets that are malicious
