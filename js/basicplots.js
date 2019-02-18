@@ -58,19 +58,57 @@ $.getJSON("https://api.myjson.com/bins/6i2tm", function(json) {
         width: 500,
     }
     
+    //plot the bar
     Plotly.newPlot('bar-chart', plotdata, layoutBar);
 
     //plotly pie
+    Plotly.newPlot('pie-chart-packets', plotdata2, layoutPie);
 
-    Plotly.newPlot('pie-chart', plotdata2, layoutPie);
-
-
-    $("#loading").css("display", "none");
-    $(".main").css("display", "block");
+    //malicious packets
 
     //get the maximum value of the malicious activity, and count it for a certain packet.
 
+    //get the maximum of each.
+
+    maxMalicious = getTotalActivityType("mirai", data);
+    maxNormal = getTotalActivityType("norm", data);
+    maxDNS = getTotalActivityType("dns", data);
     
+    var packets = getMaliciousIPS(data);
+
+    //create a new pie chart with the new malicious packets.
+
+    var packetsLabels = [];
+    var packetsValues = [];
+    packets.sort();
+
+    packets.forEach(function(packet) {
+        packetsLabels.push(packet.address);
+        packetsValues.push(packet.maliciousPackets);
+    });
+
+    var plotDataIPs = [
+        {
+        labels: packetsLabels,
+        values: packetsValues,
+        type: "pie",
+        name: "Ip addresses that sent malicious packets",
+        }
+    
+    ]
+
+    var layoutPieIP = {
+        title: "Ip addresses that sent malicious packets",
+        height: 500,
+        width: 500,
+    }
+
+    Plotly.newPlot('pie-chart-IPs', plotDataIPs, layoutPieIP);
+
+
+    //always leave this at the bottom!
+    $("#loading").css("display", "none");
+    $(".main").css("display", "block");
 
 });
 
@@ -79,9 +117,14 @@ function getCount(name) {
 switch(name) {
     case "DNS":
         return totalDNS;
-        
     case "ICMP":
         return totalICMP;
+    case "ARP":
+        return totalARP;
+    case "TELNET":
+        return totalTELNET;
+    case "TCP":
+        return totalTCP;
     default:
         return 0;
 }
@@ -112,5 +155,55 @@ function getTotalIP(source, jsonData) {
 }
 
 function getTotalActivityType(activity, jsonData) {
+    max = 0;
 
+    for(i = 0; i < jsonData.length; i++) {
+        if(jsonData[i].Activity == activity) {
+            max++
+        }
+    }
+    return max;
+}
+
+function getMaliciousIPS(jsonData) {
+    // loop through object and get all IPS that are sending packets that are malicious
+    //use a dictionary of sorts
+    // key : ip (string) value : total malicious strings (number)
+
+    var IPdict = {};
+    var Packets = [];
+
+    for(i = 0; i < jsonData.length; i++) {
+        // has the address appeared already?
+        found = false;
+        for(j = 0; j < Packets.length; j++) {
+        
+            if(jsonData[i].SourceDevice == Packets[j].address) {
+                found = true;
+
+               if(jsonData[i].Activity == "mirai") {
+
+                    Packets[j].maliciousPackets++;
+
+                }
+                
+            }
+        }
+
+        //if it hasn't, then add it
+        if(found == false) {
+
+            var packet = {}
+
+            packet.address = jsonData[i].SourceDevice;
+
+            if(jsonData.Activity = "mirai") {
+                packet.maliciousPackets = 1;
+                Packets.push(packet);
+            }
+            
+        }
+        
+    }
+    return Packets;
 }
