@@ -109,7 +109,7 @@ $.getJSON("https://api.myjson.com/bins/6i2tm", function(json) {
 
     var layoutPieMalPackets =
         {
-            title: "Packets that were consider to be malicious, normal or DNS",
+            title: "Packets that were considered to be malicious, normal or DNS",
             height: 600,
             width: 600,
         }
@@ -119,7 +119,7 @@ $.getJSON("https://api.myjson.com/bins/6i2tm", function(json) {
             labels: ["Malicious", "Normal", "DNS"],
             values: [maxMalicious, maxNormal, maxDNS],
             type: "pie",
-            name: "Ip addresses that sent malicious packets",
+            name: "Types of packets that were sent",
             }
         
         ]
@@ -128,7 +128,68 @@ $.getJSON("https://api.myjson.com/bins/6i2tm", function(json) {
     Plotly.newPlot('pie-chart-IPs', plotDataIPs, layoutPieIP);
     Plotly.newPlot('pie-chart-MalPacks', plotDataMalPackets, layoutPieMalPackets);
 
+    //try to get normal or malicious Packets now.
 
+    maxMalTCP = getMaliciousPackets("TCP", data, "mirai");
+
+    maxMalDNS = getMaliciousPackets("DNS", data, "mirai");
+
+    maxMalARP = getMaliciousPackets("ARP", data, "mirai");
+
+    maxMalICMP = getMaliciousPackets("ICMP", data, "mirai")
+
+    maxMalTELNET = getMaliciousPackets("TELNET", data, "mirai");
+
+    maxNormTCP = getMaliciousPackets("TCP", data, "norm");
+
+    maxNormDNS = getMaliciousPackets("DNS", data, "norm");
+
+    maxNormARP = getMaliciousPackets("ARP", data, "norm");
+
+    maxNormTELNET = getMaliciousPackets("TELNET", data, "norm");
+
+    maxNormICMP = getMaliciousPackets("ICMP", data, "norm");
+
+    var plotDataMalType = [
+        {
+            labels: ["TCP", "DNS", "ARP", "ICMP", "TELNET"],
+            values: [maxMalTCP, maxMalDNS, maxMalARP, maxMalICMP, maxMalTELNET],
+            type: "pie",
+            name: "Malicious DataTypes",
+        }
+    ]
+
+    var layoutPieMalPackets =
+    {
+        title: "Malicious Packets",
+        height: 600,
+        width: 600,
+    }
+
+    var plotDataNormType = [
+        {
+            labels: ["TCP","DNS", "ARP", "ICMP", "TELNET"],
+            values: [maxNormTCP, maxNormDNS, maxNormARP, maxNormICMP, maxNormTELNET],
+            type: "pie",
+            name: "Normal packets"
+        }
+    ]
+
+    var layoutPieNormPackets =
+    {
+        title: "Normal Packets",
+        height: 600,
+        width: 600,
+    }
+
+    Plotly.newPlot('pie-chart-MalData', plotDataMalType, layoutPieMalPackets);
+
+    Plotly.newPlot('pie-chart-NormData', plotDataNormType, layoutPieNormPackets);
+
+
+    //look into doing some bubble-based charts now.
+
+    
 
     //always leave this at the bottom!
     $("#loading").css("display", "none");
@@ -191,11 +252,21 @@ function getTotalActivityType(activity, jsonData) {
 
 //this function loops through and gets all specfied packets that were considered malicious 
 
+function getMaliciousPackets(DataType, jsonData, activityType) {
+    max = 0;
+
+    for(i = 0; i < jsonData.length; i++) {
+        if(jsonData[i].Activity == activityType && jsonData[i].DataType == DataType) {
+            max++;
+        }
+    }
+    return max;
+} 
 
 function getMaliciousIPS(jsonData) {
     // loop through object and get all IPS that are sending packets that are malicious
     //use a dictionary of sorts
-    // key : ip (string) value : total malicious strings (number)
+    // key : ip address (string) value : total malicious strings (number)
 
     var IPdict = {};
     var Packets = [];
@@ -224,7 +295,7 @@ function getMaliciousIPS(jsonData) {
 
             packet.address = jsonData[i].SourceDevice;
 
-            if(jsonData.Activity = "mirai") {
+            if(jsonData[i].Activity == "mirai") {
                 packet.maliciousPackets = 1;
                 Packets.push(packet);
             }
