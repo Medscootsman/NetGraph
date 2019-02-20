@@ -15,6 +15,25 @@
   font-family: sans-serif;
 }
 
+h1 {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: bolder;
+  font-style: italic;
+  text-align: center;
+}
+
+body {
+  
+}
+
+h2 {
+  margin-left: 2%;
+}
+
+h3 {
+  margin-left: 4%;
+}
+
 #loading {
   z-index: 1;
   text-align: center;
@@ -23,19 +42,34 @@
   display:inline-block;
   margin-top: auto;
   margin-bottom: auto;
-  top: 27.5%;
+  top: 15.5%;
   left: 50%;
   position: fixed;
   margin-left: -9em;
   margin-right: -15em;
-  padding-bottom: 50px;
   
+}
+
+.loading-text {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-style: oblique;
+  font-size: 24px;
+}
+
+.loading-text-title {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-style: oblique;
+  font-size: 28px;
 }
 
 #bar-chart {
   padding-left: 20%;
   padding-top: 0.25%;
   left:5%;
+
+  align-content: center;
 }
 
 .pie-charts {
